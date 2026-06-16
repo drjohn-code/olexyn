@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# olexyn
 
-## Getting Started
+Sustainability project with our IP formulation — the **OLEXION** landing page.
 
-First, run the development server:
+OLEXION makes AF‑C1, an applied bio‑based fuel additive ("Chemistry in Motion").
+This repository is the marketing site: a single‑page, scroll‑driven cinematic
+landing page built with Next.js, with Supabase wired up for future auth/data.
+
+## Tech stack
+
+- **Next.js 16** (App Router, Turbopack) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** (CSS‑first; theme tokens live in `src/app/globals.css`, no `tailwind.config.js`)
+- **Supabase** via `@supabase/supabase-js` + `@supabase/ssr`
+- Self‑hosted fonts (Saira / Hanken Grotesk / Space Mono) via `next/font`
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local   # then fill in your Supabase values
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the page.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build   # production build
+npm run start   # serve the production build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables
 
-## Learn More
+Set these in `.env.local` (gitignored — see `.env.example` for the template):
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Required | Notes |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | yes | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | yes | New‑style publishable key (preferred) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | optional | Legacy fallback if the project hasn't migrated to publishable keys |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/
+    layout.tsx              # fonts + metadata
+    page.tsx                # renders the landing page
+    globals.css             # Tailwind import + OLEXION design system (bespoke CSS/keyframes)
+  components/olexion/
+    Landing.tsx             # full landing-page markup ('use client')
+    scroll-choreography.ts  # hero video scroll-scrub + per-act animation engine
+    simulator.ts            # savings calculator + animated stat rings
+    validation-reveal.ts    # partner-logo wall flip-in on scroll
+  utils/supabase/
+    client.ts               # browser client
+    server.ts               # server client (cookies via next/headers)
+    middleware.ts           # updateSession() session-refresh helper
+  middleware.ts             # Next middleware entry (matcher skips static assets)
+public/assets/              # hero.mp4, vision image, engine renders, partner logos, brand wordmark
+```
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploys to [Vercel](https://vercel.com/) (already linked). Set the same environment
+variables in the Vercel project settings.
